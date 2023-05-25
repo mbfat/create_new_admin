@@ -6,7 +6,7 @@ https://www.atera.com/shared-script-library/create-local-administrator-account/?
 
 use asdf12#$ if you are screen sharing
 ###
-net user localadmin asdf123#$ /add
+net user localadmin asdf12#$ /add
 net localgroup administrators username /add
 WMIC USERACCOUNT WHERE Name='localadmin' SET PasswordExpires=FALSE
 ###
