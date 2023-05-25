@@ -1,0 +1,42 @@
+
+https://www.atera.com/shared-script-library/create-local-administrator-account/?cq_src=google_ads&cq_cmp=17125495084&cq_term=&cq_plac=&cq_net=g&cq_plt=gp&utm_adgroup=dsa_all_pages&utm_adname=&utm_audience=&utm_source=adwords&utm_campaign=search-usa-dsa-tcpa-may22&utm_medium=cpc&utm_term=NoKeyword&hsa_cam=17125495084&hsa_grp=148409954527&hsa_ad=654364396245&hsa_kw=&hsa_tgt=dsa-19959388920&hsa_mt=&hsa_acc=6675104902&hsa_src=g&hsa_net=adwords&hsa_ver=3&gclid=Cj0KCQjwjryjBhD0ARIsAMLvnF-RhGJB1UUa8JoQ7yKxB8qq1mkiLn0jE42Xi6EkK63mB9tp8jfmyjMaAsNUEALw_wcB
+
+use asdf12#$ if you are screen sharing
+###
+net user localadmin asdf123#$ /add
+net localgroup administrators username /add
+WMIC USERACCOUNT WHERE Name='localadmin' SET PasswordExpires=FALSE
+###
+you will need the machine name
+signout signin as new user and CHANGE THE PASSWORD
+
+
+___________________________________________________________________
+
+
+https://gist.github.com/ducas/3a65704a3b92dfa0301e
+
+$Username = "su"
+$Password = "password"
+
+$group = "Administrators"
+
+$adsi = [ADSI]"WinNT://$env:COMPUTERNAME"
+$existing = $adsi.Children | where {$_.SchemaClassName -eq 'user' -and $_.Name -eq $Username }
+
+if ($existing -eq $null) {
+
+    Write-Host "Creating new local user $Username."
+    & NET USER $Username $Password /add /y /expires:never
+    
+    Write-Host "Adding local user $Username to $group."
+    & NET LOCALGROUP $group $Username /add
+
+}
+else {
+    Write-Host "Setting password for existing local user $Username."
+    $existing.SetPassword($Password)
+}
+
+Write-Host "Ensuring password for $Username never expires."
+& WMIC USERACCOUNT WHERE "Name='$Username'" SET PasswordExpires=FALSE
